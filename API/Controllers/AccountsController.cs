@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers;
 
-public class AccountsController(DataContext context, ITokenService tokerService) : BaseApiController
+public class AccountController(DataContext context, ITokenService tokerService) : BaseApiController
 {
 [HttpPost("register")]
 public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto){
