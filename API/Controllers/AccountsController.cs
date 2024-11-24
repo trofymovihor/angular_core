@@ -17,19 +17,20 @@ public class AccountController(DataContext context, ITokenService tokerService) 
 public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto){
 
     if (await userExists(registerDto.Username)){ return BadRequest($"{registerDto.Username} is taken"); }
-    using var hmac = new HMACSHA512();
-    var user = new AppUser(){
-        UserName = registerDto.Username,
-        PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-        PasswordSalt = hmac.Key
-    };
+    return Ok();
+    // using var hmac = new HMACSHA512();
+    // var user = new AppUser(){
+    //     UserName = registerDto.Username,
+    //     PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
+    //     PasswordSalt = hmac.Key
+    // };
 
-    context.Users.Add(user);
-    await context.SaveChangesAsync();
-    return new UserDto{
-        Username = registerDto.Username,
-        Token = tokerService.CreateToken(user)
-    };
+    // context.Users.Add(user);
+    // await context.SaveChangesAsync();
+    // return new UserDto{
+    //     Username = registerDto.Username,
+    //     Token = tokerService.CreateToken(user)
+    // };
 }
 
 [HttpPost("login")]
