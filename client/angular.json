@@ -31,6 +31,11 @@
               "node_modules/font-awesome/css/font-awesome.min.css",
               "node_modules/ngx-toastr/toastr.css",
               "node_modules/bootswatch/dist/united/bootstrap.min.css",
+              "node_modules/lightgallery/css/lightgallery.css",
+              "node_modules/lightgallery/css/lg-zoom.css",
+              "node_modules/lightgallery/css/lg-thumbnail.css",
+              "node_modules/lightgallery/css/lightgallery-bundle.css",
+              "node_modules/ngx-spinner/animations/ball-grid-pulse.css",
               "src/styles.css"
             ],
             "scripts": []
