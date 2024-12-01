@@ -5,6 +5,7 @@ using System.Text;
 using API.Data;
 using API.DTOs;
 using API.Interfaces;
+using CloudinaryDotNet.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -36,8 +37,11 @@ public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto){
 
 [HttpPost("login")]
 public async Task<ActionResult<UserDto>> Login (LoginDTO loginDto){
-    var user = await context.Users.FirstOrDefaultAsync(x => 
-    x.UserName.ToLower() == loginDto.Username.ToLower());
+    var user = await context.Users
+    .Include(u => u.Photos)
+    .FirstOrDefaultAsync(x => 
+    x.UserName.ToLower() == loginDto.Username.ToLower())
+    ;
     if (user == null){return Unauthorized("Invalid username");}
 
     using var hmac = new HMACSHA512(user.PasswordSalt);
@@ -50,7 +54,8 @@ public async Task<ActionResult<UserDto>> Login (LoginDTO loginDto){
     }
     return Ok( new UserDto{
         Username = loginDto.Username,
-        Token = tokerService.CreateToken(user)
+        Token = tokerService.CreateToken(user),
+        PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
     });
 }
 
