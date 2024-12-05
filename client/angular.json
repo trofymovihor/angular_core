@@ -36,6 +36,7 @@
               "node_modules/lightgallery/css/lg-thumbnail.css",
               "node_modules/lightgallery/css/lightgallery-bundle.css",
               "node_modules/ngx-spinner/animations/ball-grid-pulse.css",
+              "node_modules/ngx-bootstrap/datepicker/bs-datepicker.css",
               "src/styles.css"
             ],
             "scripts": []

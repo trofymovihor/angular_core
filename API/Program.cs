@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Configuration.AddUserSecrets<Program>();
+var movieApiKey = builder.Configuration["Movies:ServiceApiKey"];
 
 // Add services to the container.
 
@@ -41,5 +43,11 @@ catch (Exception ex)
     var logger = services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, "an error occurred during migration");
 }
+
+IConfigurationRoot config = new ConfigurationBuilder()
+    .AddUserSecrets<Program>()
+    .Build();
+var test = config["AppSecret"];
+Console.WriteLine(config["AppSecret"]);
 
 app.Run();
