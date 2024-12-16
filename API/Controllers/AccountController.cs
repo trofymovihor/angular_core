@@ -1,13 +1,10 @@
-using System;
 using System.Security.Cryptography;
-using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using API.Data;
 using API.DTOs;
 using API.Entities;
 using API.Interfaces;
 using AutoMapper;
-using CloudinaryDotNet.Core;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +12,9 @@ using Microsoft.EntityFrameworkCore;
 namespace API.Controllers;
 
 [AllowAnonymous]
-public class AccountsController(
+public class AccountController(
     DataContext context,
-     ITokenService tokerService,
+     ITokenService tokenService,
       IConfiguration _config,
       IMapper mapper
 ) : BaseApiController
@@ -40,7 +37,8 @@ public class AccountsController(
         await context.SaveChangesAsync();
         return new UserDto{
             Username = registerDto.Username,
-            Token = tokerService.CreateToken(user),
+            Token = tokenService.CreateToken(user),
+            Gender = user.Gender,
             KnownAs = user.KnownAs,
         };
     }
@@ -69,7 +67,8 @@ public class AccountsController(
         {
             KnownAs = user.KnownAs,
             Username = loginDto.Username,
-            Token = tokerService.CreateToken(user),
+            Gender = user.Gender,
+            Token = tokenService.CreateToken(user),
             PhotoUrl = user.Photos.FirstOrDefault(x => x.IsMain)?.Url
         });
     }

@@ -1,10 +1,7 @@
-using System.Text;
 using API.Data;
 using API.Extensions;
 using API.Middleware;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddUserSecrets<Program>();
@@ -21,8 +18,8 @@ app.UseMiddleware<ExceptionMiddleware>();
 app.UseCors(x =>
 {
     x.AllowAnyHeader()
-    .AllowAnyMethod()
-    .WithOrigins("http://localhost:4200", "https://localhost:4200");
+        .AllowAnyMethod()
+        .WithOrigins("http://localhost:4200", "https://localhost:4200");
 });
 
 app.UseAuthentication();
@@ -44,9 +41,7 @@ catch (Exception ex)
     logger.LogError(ex, "an error occurred during migration");
 }
 
-IConfigurationRoot config = new ConfigurationBuilder()
-    .AddUserSecrets<Program>()
-    .Build();
+IConfigurationRoot config = new ConfigurationBuilder().AddUserSecrets<Program>().Build();
 var test = config["AppSecret"];
 Console.WriteLine(config["AppSecret"]);
 
