@@ -25,16 +25,21 @@ export class MembersService {
     this.userParams.set(new UserParams(this.user))
   }
 
+  private SetFilterHeaders(params:HttpParams, userParams: UserParams): HttpParams {
+    params = params.append('minAge', userParams.minAge);
+    params = params.append('maxAge', userParams.maxAge);
+    params = params.append('gender', userParams.gender);
+    params = params.append('orderBy', userParams.orderBy);
+    return params;
+  }
+
   getMembers() {
     const response = this.memberCache.get(Object.values(this.userParams()).join('-'));
     if (response) return this.setPaginatedResponse(response);
 
     let params = this.setPaginationHeaders(this.userParams().pageNumber, this.userParams().pageSize);
+    params = this.SetFilterHeaders(params, this.userParams())
 
-    params = params.append('minAge', this.userParams().minAge);
-    params = params.append('maxAge', this.userParams().maxAge);
-    params = params.append('gender', this.userParams().gender);
-    params = params.append('orderBy', this.userParams().orderBy);
 
 
     return this.http.get<Member[]>(this.baseUrl + 'users', { observe: 'response', params })

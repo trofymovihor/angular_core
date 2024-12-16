@@ -33,6 +33,8 @@ export class MemberListComponent implements OnInit{
   }
 
   pageChanged(event: any) {
+    console.log(event)
+    debugger
     if (this.memberService.userParams().pageNumber !== event.page) {
       this.memberService.userParams().pageNumber = event.page;
       this.loadMembers();
