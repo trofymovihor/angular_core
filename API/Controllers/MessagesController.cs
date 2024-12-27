@@ -23,6 +23,7 @@ public class MessagesController(
         var sender = await userRepository.GetUserByUsernameAsync(username);
         var recipient = await userRepository.GetUserByUsernameAsync(createMessageDto.RecipientUsername);
         if (sender == null || recipient == null) return BadRequest("Cannot send message at this time");
+        if (sender.UserName is null || recipient.UserName is null) return BadRequest("Sender ot recipient username cannot be null");
         var message = new Message()
         {
             Sender = sender,

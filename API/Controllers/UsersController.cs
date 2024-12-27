@@ -17,6 +17,7 @@ IMapper mapper,
 IPhotoService photoService
 ) : BaseApiController
 {
+
     [HttpGet]
     public async Task<ActionResult<IEnumerable<MemberDto>>> GetUsers([FromQuery] UserParams userParams)
     {
@@ -65,7 +66,8 @@ IPhotoService photoService
             PublicId = result.PublicId
         };
 
-        if (user.Photos.Count == 0){
+        if (user.Photos.Count == 0)
+        {
             photo.IsMain = true;
         }
         user.Photos.Add(photo);
@@ -98,20 +100,22 @@ IPhotoService photoService
     }
 
     [HttpDelete("delete-photo/{photoId}")]
-    public async Task<ActionResult> DeletePhoto(int photoId){
+    public async Task<ActionResult> DeletePhoto(int photoId)
+    {
         var user = await repository.GetUserByUsernameAsync(User.GetUsername());
-        if (user==null) return BadRequest("User not found");
+        if (user == null) return BadRequest("User not found");
 
-        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId); 
+        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
         if (photo == null || photo.IsMain) return BadRequest("this Photo cannot bedeleted");
 
-        if (photo.PublicId!=null){
+        if (photo.PublicId != null)
+        {
             var result = await photoService.DeletePhotoAsync(photo.PublicId);
             if (result.Error != null) return BadRequest(result.Error.Message);
         }
         user.Photos.Remove(photo);
 
-        if (await repository.SaveAllAsync()){ return Ok();}
+        if (await repository.SaveAllAsync()) { return Ok(); }
         return BadRequest("Problem deleting photo");
     }
 
