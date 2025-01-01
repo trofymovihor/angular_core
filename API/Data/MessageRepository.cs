@@ -67,15 +67,15 @@ public class MessageRepository(DataContext context, IMapper mapper) : IMessageRe
             _ => query.Where(x => x.Recipient.UserName == messageParams.Username
                 && x.MessageRead == null && x.RecipientDeleted == false),
         };
-var TEST = query.ToList();
+        var TEST = query.ToList();
         var messages = query.ProjectTo<MessageDto>(mapper.ConfigurationProvider);
         return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
     }
 
     public async Task<IEnumerable<MessageDto>> GetMessageThread(string currentUsername, string recipientUsername)
     {
-        var messages = await context.Messages
-            .Where(x => 
+        var query = context.Messages
+            .Where(x =>
                 x.RecipientUsername == currentUsername
                     && x.RecipientDeleted == false
                     && x.SenderUsername == recipientUsername ||
@@ -84,28 +84,21 @@ var TEST = query.ToList();
                     && x.RecipientUsername == recipientUsername
             )
             .OrderBy(x => x.MessageSent)
-            .ProjectTo<MessageDto>(mapper.ConfigurationProvider)
-            .ToListAsync();
+            .AsQueryable();
 
-        var unreadMessages = messages.Where(x => x.MessageRead == null &&
+        var unreadMessages = query.Where(x => x.MessageRead == null &&
             x.RecipientUsername == currentUsername).ToList();
 
         if (unreadMessages.Count != 0)
         {
             unreadMessages.ForEach(x => x.MessageRead = DateTime.UtcNow);
-            await context.SaveChangesAsync();
         }
 
-        return messages;
+        return await query.ProjectTo<MessageDto>(mapper.ConfigurationProvider).ToListAsync();;
     }
 
     public void RemoveConnection(Connection connection)
     {
         context.Connections.Remove(connection);
-    }
-
-    public async Task<bool> SaveAllAsync()
-    {
-        return await context.SaveChangesAsync() > 0;
     }
 }

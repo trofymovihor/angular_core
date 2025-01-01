@@ -12,8 +12,8 @@ namespace API.Controllers;
 [AllowAnonymous]
 public class AccountController(
     UserManager<AppUser> userManager,
-     ITokenService tokenService,
-      IMapper mapper
+    ITokenService tokenService,
+    IMapper mapper
 ) : BaseApiController
 {
     [HttpPost("register")]
