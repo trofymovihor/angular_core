@@ -30,8 +30,9 @@ public class UsersController(
     [HttpGet("{username}")]
     public async Task<ActionResult<MemberDto>> GetUser(string username)
     {
-        var user = await unitOfWork.UserRepository.GetMemberAsync(username);
-
+        var currentUser =  User.GetUsername();
+        if (currentUser == null) return BadRequest("This cannot happen as controller is Authorized");
+        var user = await unitOfWork.UserRepository.GetMemberAsync(username, isCurrentUser: currentUser == username);
         if (user == null) return NotFound();
 
         return user;
@@ -66,10 +67,6 @@ public class UsersController(
             PublicId = result.PublicId
         };
 
-        if (user.Photos.Count == 0)
-        {
-            photo.IsMain = true;
-        }
         user.Photos.Add(photo);
 
         if (await unitOfWork.Complete())
@@ -105,7 +102,7 @@ public class UsersController(
         var user = await unitOfWork.UserRepository.GetUserByUsernameAsync(User.GetUsername());
         if (user == null) return BadRequest("User not found");
 
-        var photo = user.Photos.FirstOrDefault(x => x.Id == photoId);
+        var photo = await unitOfWork.PhotoRepository.GetPhotoById(photoId);
         if (photo == null || photo.IsMain) return BadRequest("this Photo cannot bedeleted");
 
         if (photo.PublicId != null)

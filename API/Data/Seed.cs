@@ -35,11 +35,19 @@ public class Seed
         foreach (var user in users)
         {
             user.UserName = user.UserName!.ToLower();
+            if (user.Photos.Count > 0)
+            {
+                foreach (var photo in user.Photos)
+                {
+                    photo.IsApproved = true;
+                }
+            }
             await userManager.CreateAsync(user, "Pa$$w0rd");
             await userManager.AddToRoleAsync(user, "Member");
         }
 
-        var admin = new AppUser{
+        var admin = new AppUser
+        {
             UserName = "admin",
             KnownAs = "Admin",
             Gender = "",
